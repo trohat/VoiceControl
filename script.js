@@ -10,10 +10,11 @@ function VoiceControl() {
     this.keys = ['RegalId', 'PatroId', 'PoziceId', 'Material', 'Pocet', 'Jednotka'];
     this.position = 0;
     this.reader = new SpeechSynthesisUtterance();
+    //window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 };
 
 VoiceControl.prototype = {
-
+    
     readLine() {
         if (this.position >= this.items.length) this.reader.text = "Konec";
         else {
@@ -26,6 +27,18 @@ VoiceControl.prototype = {
     },
     
     start() {
+        /*this.recognition = new SpeechRecognition();
+        this.recognition.continuous = true;
+        this.recognition.interimResults = true;
+        this.recognition.lang = 'cs-CZ';
+        console.log(this.recognition);
+        this.recognition.onresult = function(e) {
+            console.log("recognition result");
+            console.log(e);
+        };
+        this.recognition.start();
+        this.recognition.onend = this.recognition.start;*/
+
         this.position = 0;
         this.readLine();
     },
@@ -39,6 +52,10 @@ VoiceControl.prototype = {
         this.position++;
         speechSynthesis.cancel();
         this.readLine();
+    },
+
+    stop() {
+        speechSynthesis.cancel();
     },
 
     setupVoice() {
@@ -60,6 +77,7 @@ const qs_ael = name => {
 qs_ael('start');
 qs_ael('repeat');
 qs_ael('next');
+qs_ael('stop');
 
 /* qs_ael is shortcut for this...
 const startButton = document.querySelector('.start');
