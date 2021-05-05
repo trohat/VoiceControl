@@ -19,12 +19,16 @@ function VoiceControl() {
         console.log("Tohle je výsledek:", result);
         switch (result.toLowerCase()) {
             case 'znovu':
+            case 'opakuj':
                 vc.repeat();
                 break;
+            case 'dál':
+            case 'dále':
             case 'další':
                 vc.next();
                 break;
             case 'stop':
+            case 'skonči':
                 vc.stop();
                 break;
             default:
