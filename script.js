@@ -8,9 +8,31 @@ function VoiceControl() {
         { RegalId: 'Regál 7', PatroId: 'Patro D', PoziceId: 'Pozice  7', Material: 'Matice 6HR M8 8 galZn', Pocet: 'Počet 12', Jednotka: 'Kusů' }
     ];
     this.keys = ['RegalId', 'PatroId', 'PoziceId', 'Material', 'Pocet', 'Jednotka'];
-    this.position = 0;
     this.reader = new SpeechSynthesisUtterance();
-    //window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    this.speech = new SpeechRecognition();
+    this.speech.lang = 'cs-CZ';
+    this.speech.onresult = function(e) {
+        console.log("Speech recognition result.");
+        let result = e.results[0][0].transcript;
+        console.log("Tohle je výsledek:", result);
+        switch (result.toLowerCase()) {
+            case 'znovu':
+                vc.repeat();
+                break;
+            case 'další':
+                vc.next();
+                break;
+            case 'stop':
+                vc.stop();
+                break;
+            default:
+                console.log("Neznámé slovo.");
+        }
+    };
+    this.speech.onend = this.speech.start;
+    this.running = false;
 };
 
 VoiceControl.prototype = {
@@ -27,18 +49,8 @@ VoiceControl.prototype = {
     },
     
     start() {
-        /*this.recognition = new SpeechRecognition();
-        this.recognition.continuous = true;
-        this.recognition.interimResults = true;
-        this.recognition.lang = 'cs-CZ';
-        console.log(this.recognition);
-        this.recognition.onresult = function(e) {
-            console.log("recognition result");
-            console.log(e);
-        };
-        this.recognition.start();
-        this.recognition.onend = this.recognition.start;*/
-
+        if (!this.running) this.speech.start();
+        this.running = true;
         this.position = 0;
         this.readLine();
     },
@@ -65,7 +77,6 @@ VoiceControl.prototype = {
 };
 
 const vc = new VoiceControl();
-//vc.setupVoice();
 
 speechSynthesis.addEventListener('voiceschanged', () => vc.setupVoice());
 
