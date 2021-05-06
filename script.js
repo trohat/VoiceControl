@@ -36,18 +36,36 @@ function VoiceControl() {
         }
     };
     this.speech.onend = this.speech.start;
+
     this.running = false;
+    this.timeout = null;
 };
 
 VoiceControl.prototype = {
     
     readLine() {
-        if (this.position >= this.items.length) this.reader.text = "Konec";
+        if (this.position >= this.items.length) {
+            this.reader.text = "Konec";
+        }
         else {
-            this.reader.text = "";
-            for (key of this.keys) {
-                this.reader.text += this.items[this.position][key];
-            }
+            let key = 0;
+            this.reader.text = this.items[this.position][this.keys[key]];
+            console.log(this.items[this.position])
+            this.reader.onend = () => {
+                key++;
+                if (key < this.keys.length) {
+                    if (key < 4) {
+                        this.reader.text = this.items[this.position][this.keys[key]];
+                    }
+                    else if (key === 4) {
+                        this.reader.text = this.items[this.position][this.keys[4]] + this.items[this.position][this.keys[5]];
+                    }
+                    else {
+                        this.reader.text = "";
+                    }
+                    this.timeout = setTimeout(() => speechSynthesis.speak(this.reader), 500);
+                }
+            };
         }
         speechSynthesis.speak(this.reader);
     },
@@ -60,17 +78,19 @@ VoiceControl.prototype = {
     },
     
     repeat() {
-        speechSynthesis.cancel();
+        this.stop();
         this.readLine();
     },
     
     next() {
+        this.stop();
         this.position++;
-        speechSynthesis.cancel();
         this.readLine();
     },
 
     stop() {
+        clearTimeout(this.timeout);
+        this.reader.onend = null;
         speechSynthesis.cancel();
     },
 
