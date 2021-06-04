@@ -96,6 +96,7 @@ VoiceControl.prototype = {
 
     setupVoice() {
         const voices = speechSynthesis.getVoices();
+        console.log(voices);
         this.reader.voice = voices.find(v => v.lang === "cs-CZ");
     }
 };
