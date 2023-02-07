@@ -7,7 +7,9 @@ function VoiceControl() {
         { RegalId: 'Regál 4', PatroId: 'Patro B', PoziceId: 'Pozice 13', Material: 'Spona 88.6', Pocet: 'Počet 4', Jednotka: 'Kusů' },
         { RegalId: 'Regál 7', PatroId: 'Patro D', PoziceId: 'Pozice  7', Material: 'Matice 6HR M8 8 galZn', Pocet: 'Počet 12', Jednotka: 'Kusů' }
     ];
-    this.keys = ['RegalId', 'PatroId', 'PoziceId', 'Material', 'Pocet', 'Jednotka'];
+    // this.keys = ['RegalId', 'PatroId', 'PoziceId', 'Material', 'Pocet', 'Jednotka'];
+    this.keys = Object.keys(this.items[0]);
+    console.log(this.keys);
     this.reader = new SpeechSynthesisUtterance();
 
     window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -20,16 +22,16 @@ function VoiceControl() {
         switch (result.toLowerCase()) {
             case 'znovu':
             case 'opakuj':
-                vc.repeat();
+                this.repeat();
                 break;
             case 'dál':
             case 'dále':
             case 'další':
-                vc.next();
+                this.next();
                 break;
             case 'stop':
             case 'skonči':
-                vc.stop();
+                this.stop();
                 break;
             default:
                 console.log("Neznámé slovo.");
